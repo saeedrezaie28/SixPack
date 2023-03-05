@@ -6,6 +6,8 @@ using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using System.Text.Json;
+using SixPack.Apllication;
+using SixPack.Domain.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +18,10 @@ builder.Services.AddControllers().AddNewtonsoftJson();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<IProdcutServices, SixPack.Apllication.ProdcutServices>();
+builder.Services.AddScoped<IProdcutRepository, SixPack.Infrastructure.ProdcutRepository>();
+builder.Services.AddScoped<IUnitOfWork, SixPack.Infrastructure.SixPackDB>();
 
 
 //add dbContext

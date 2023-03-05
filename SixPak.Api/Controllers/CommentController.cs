@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SixPack.Domain;
+using SixPack.Domain.Entity;
 using SixPack.Infrastructure;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -17,14 +17,14 @@ namespace SixPack.Api.Controllers
             this.sixPackDB = sixPackDB;
         }
 
-        [HttpGet(Name = "GetComment")]
+        [HttpGet("GetComment", Name = "GetComment")]
         public async Task<IActionResult> Get()
         {
             var prdocuts = await sixPackDB.Comments.ToListAsync();
             return Ok(prdocuts);
         }
 
-        [HttpPost(Name = "InsertComment")]
+        [HttpPost("InsertComment", Name = "InsertComment")]
         public async Task<IActionResult> Insert(CommentInsert commentInsert)
         {
             try

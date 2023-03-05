@@ -1,4 +1,4 @@
-﻿namespace SixPack.Domain;
+﻿namespace SixPack.Domain.Entity;
 
 public class User
 {

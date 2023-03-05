@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Domain\SixPack.Domain.csproj" />
     <ProjectReference Include="..\Infrastructure\SixPack.Infrastructure.csproj" />
+    <ProjectReference Include="..\SixPack.Apllication\SixPack.Apllication.csproj" />
   </ItemGroup>
 
 </Project>

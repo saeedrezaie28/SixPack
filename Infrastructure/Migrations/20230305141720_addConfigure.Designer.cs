@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SixPack.Infrastructure;
 
@@ -11,9 +12,11 @@ using SixPack.Infrastructure;
 namespace SixPack.Infrastructure.Migrations
 {
     [DbContext(typeof(SixPackDB))]
-    partial class SixPackDBModelSnapshot : ModelSnapshot
+    [Migration("20230305141720_addConfigure")]
+    partial class addConfigure
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

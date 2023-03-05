@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SixPack.Domain;
+using SixPack.Apllication;
+using SixPack.Domain.Entity;
 using SixPack.Infrastructure;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -10,44 +11,33 @@ namespace SixPack.Api.Controllers
     [Route("api/[controller]")]
     public class ProdcutController : ControllerBase
     {
-        private readonly SixPackDB sixPackDB;
+        private readonly IProdcutServices _prodcutServices;
 
-        public ProdcutController(SixPackDB sixPackDB)
+        public ProdcutController(IProdcutServices prodcutServices)
         {
-            this.sixPackDB = sixPackDB;
+            _prodcutServices = prodcutServices;
         }
 
-        [HttpGet("Get", Name = "GetProdcut")]
+        [HttpGet("GetProducts", Name = "GetProdcut")]
         public async Task<IActionResult> Get()
         {
-            var prdocuts = await sixPackDB.Products
-                .Include(c => c.Comments)
-                .Include(c => c.Images)
-                .Include(c => c.Category)
-                .ToListAsync();
+            var prdocuts = await _prodcutServices.GetProduct();
             return Ok(prdocuts);
         }
 
         [HttpGet("GetProdcutById/{id:int}", Name = "GetProdcutById")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var prdocuts = await sixPackDB.Products
-                .Include(c => c.Comments)
-                .Include(c => c.Images)
-                .Include(c => c.Category)
-                .FirstOrDefaultAsync(a => a.ID == id);
-
+            var prdocuts = await _prodcutServices.GetProductById(id);
             return Ok(prdocuts);
         }
 
-        [HttpPost(Name = "InsertProdcut")]
-        public async Task<IActionResult> Insert(ProductInsert productInsert)
+        [HttpPost("InsertProdcut", Name = "InsertProdcut")]
+        public async Task<IActionResult> Insert(ProductDto productInsert)
         {
             try
             {
-                sixPackDB.Products.Add(productInsert.ToProdcut());
-                await sixPackDB.SaveChangesAsync();
-
+                await _prodcutServices.AddProduct(productInsert);
                 return Ok();
             }
             catch (Exception ex)
@@ -57,37 +47,37 @@ namespace SixPack.Api.Controllers
         }
     }
 
-    public class ProductInsert
-    {
-        public string Title { get; set; }
-        public string Color { get; set; }
-        public int Price { get; set; }
-        public string Desc { get; set; }
-        public string Slag { get; set; }
-        public int CategoryID { get; set; }
-        public List<int>? Images { get; set; }
+    //public class ProductInsert
+    //{
+    //    public string Title { get; set; }
+    //    public string Color { get; set; }
+    //    public int Price { get; set; }
+    //    public string Desc { get; set; }
+    //    public string Slag { get; set; }
+    //    public int CategoryID { get; set; }
+    //    public List<int>? Images { get; set; }
 
-        public Product ToProdcut()
-        {
-            var prodcut = new Product()
-            {
-                Title = Title,
-                Color = Color,
-                Price = Price,
-                Desc = Desc,
-                Slag = Slag,
-                CategoryID = CategoryID,
-            };
-            if (Images != null && Images.Count > 0)
-            {
-                prodcut.Images = new List<ProdcutImage>();
-                Images.ForEach(image =>
-                {
-                    prodcut.Images.Add(new ProdcutImage() { ID = image });
-                });
-            }
+    //    public Product ToProdcut()
+    //    {
+    //        var prodcut = new Product()
+    //        {
+    //            Title = Title,
+    //            Color = Color,
+    //            Price = Price,
+    //            Desc = Desc,
+    //            Slag = Slag,
+    //            CategoryID = CategoryID,
+    //        };
+    //        if (Images != null && Images.Count > 0)
+    //        {
+    //            prodcut.Images = new List<ProdcutImage>();
+    //            Images.ForEach(image =>
+    //            {
+    //                prodcut.Images.Add(new ProdcutImage() { ID = image });
+    //            });
+    //        }
 
-            return prodcut;
-        }
-    }
+    //        return prodcut;
+    //    }
+    //}
 }

@@ -12,7 +12,7 @@ using SixPack.Infrastructure;
 namespace SixPack.Infrastructure.Migrations
 {
     [DbContext(typeof(SixPackDB))]
-    [Migration("20230304112428_init")]
+    [Migration("20230305092656_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -25,7 +25,10 @@ namespace SixPack.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("SixPack.Domain.Category", b =>
+            modelBuilder.HasSequence("ProdcutImages_sequence")
+                .IncrementsBy(10);
+
+            modelBuilder.Entity("SixPack.Domain.Entity.Category", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -46,7 +49,7 @@ namespace SixPack.Infrastructure.Migrations
                     b.ToTable("Categries");
                 });
 
-            modelBuilder.Entity("SixPack.Domain.Comment", b =>
+            modelBuilder.Entity("SixPack.Domain.Entity.Comment", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -71,25 +74,20 @@ namespace SixPack.Infrastructure.Migrations
 
                     b.HasIndex("ProductID");
 
-                    b.HasIndex("UserID");
-
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("SixPack.Domain.ProdcutImage", b =>
+            modelBuilder.Entity("SixPack.Domain.Entity.ProdcutImage", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+                    SqlServerPropertyBuilderExtensions.UseHiLo(b.Property<int>("ID"), "ProdcutImages_sequence");
 
                     b.Property<string>("DownloadPath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDefault")
-                        .HasColumnType("bit");
 
                     b.Property<int>("ProductID")
                         .HasColumnType("int");
@@ -101,7 +99,7 @@ namespace SixPack.Infrastructure.Migrations
                     b.ToTable("ProdcutImages");
                 });
 
-            modelBuilder.Entity("SixPack.Domain.Product", b =>
+            modelBuilder.Entity("SixPack.Domain.Entity.Product", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -120,6 +118,9 @@ namespace SixPack.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("IndexImage")
+                        .HasColumnType("int");
+
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
@@ -133,12 +134,10 @@ namespace SixPack.Infrastructure.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("CategoryID");
-
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("SixPack.Domain.User", b =>
+            modelBuilder.Entity("SixPack.Domain.Entity.User", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -163,48 +162,25 @@ namespace SixPack.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("SixPack.Domain.Comment", b =>
+            modelBuilder.Entity("SixPack.Domain.Entity.Comment", b =>
                 {
-                    b.HasOne("SixPack.Domain.Product", "Product")
+                    b.HasOne("SixPack.Domain.Entity.Product", null)
                         .WithMany("Comments")
                         .HasForeignKey("ProductID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("SixPack.Domain.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SixPack.Domain.ProdcutImage", b =>
+            modelBuilder.Entity("SixPack.Domain.Entity.ProdcutImage", b =>
                 {
-                    b.HasOne("SixPack.Domain.Product", "Product")
+                    b.HasOne("SixPack.Domain.Entity.Product", null)
                         .WithMany("Images")
                         .HasForeignKey("ProductID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("SixPack.Domain.Product", b =>
-                {
-                    b.HasOne("SixPack.Domain.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("SixPack.Domain.Product", b =>
+            modelBuilder.Entity("SixPack.Domain.Entity.Product", b =>
                 {
                     b.Navigation("Comments");
 

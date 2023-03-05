@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SixPack.Domain;
+using SixPack.Domain.Entity;
 using SixPack.Infrastructure;
 
 namespace SixPack.Api.Controllers
@@ -16,14 +16,14 @@ namespace SixPack.Api.Controllers
             this.sixPackDB = sixPackDB;
         }
 
-        [HttpGet(Name = "GetProdcutImage")]
+        [HttpGet("GetProdcutImage", Name = "GetProdcutImage")]
         public async Task<IActionResult> Get(long prodcutId)
         {
             var prdocuts = await sixPackDB.ProdcutImages.Where(a => a.ProductID == prodcutId).ToListAsync();
             return Ok(prdocuts);
         }
 
-        [HttpPost(Name = "InsertProdcutImage")]
+        [HttpPost("InsertProdcutImage", Name = "InsertProdcutImage")]
         public async Task<IActionResult> Insert(ProdcutImageInsert prodcutImageInsert)
         {
             try
@@ -51,8 +51,7 @@ namespace SixPack.Api.Controllers
             var prodcutImage = new ProdcutImage()
             {
                 DownloadPath = DownloadPath,
-                ProductID = ProductID,
-                IsDefault = IsDefault
+                ProductID = ProductID
             };
 
             return prodcutImage;
